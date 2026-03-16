@@ -5,9 +5,9 @@ from rich.table import Table
 from datetime import datetime
 
 # Importamos nuestras capas previas
-from models import Task
-from storage import load_tasks, save_tasks
-from logic import sort_by_priority
+from taskflow.models import Task
+from taskflow.storage import load_tasks, save_tasks
+from taskflow.logic import sort_by_priority
 
 app = typer.Typer(help="TaskFlow CLI - Gestión de tareas ultra rápida.")
 console = Console()

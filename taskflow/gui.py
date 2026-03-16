@@ -2,9 +2,9 @@ import customtkinter as ctk
 import uuid
 
 # Importamos la lógica de tu proyecto original
-from models import Task
-from storage import load_tasks, save_tasks
-from logic import sort_by_priority, get_stats
+from taskflow.models import Task
+from taskflow.storage import load_tasks, save_tasks
+from taskflow.logic import sort_by_priority, get_stats
 
 # Configuración visual global de CustomTkinter
 ctk.set_appearance_mode("dark")  # Modos: "System", "Dark", "Light"

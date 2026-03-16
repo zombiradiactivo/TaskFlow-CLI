@@ -53,26 +53,26 @@ A continuación, algunos comandos básicos para interactuar con TaskFlow:
 
 Añadir una tarea(1 Prioridad baja - 5 Prioridad Alta):
 ````Bash
-python taskflow/cli.py add "Nombre de la tarea" [1-5] 
+python -m taskflow.cli add "Nombre de la tarea" [1-5] 
 ````
 Listar tareas:
 ````Bash
-python taskflow/cli.py list
+python -m taskflow.cli list
 ````
 Completar una tarea:
 ````Bash
-python taskflow/cli.py done [id]
+python -m taskflow.cli done [id]
 ````
 Eliminar una tarea:
 ````Bash
-python taskflow/cli.py delete [id]
+python -m taskflow.cli delete [id]
 ````
 
 ## 💻 Uso de la Aplicación via GUI
 
 Iniciar la interfaz grafica:
 ````Bash
-python taskflow/gui.py
+python -m taskflow.gui
 ````
 
 ## 🧠 Metodología: Colaboración Humano-IA

@@ -52,7 +52,7 @@ from taskflow.models import Task
 from taskflow.storage import save_tasks,load_tasks
 
 
-def test_task_to_dict_from_dict():
+def test_task_a_dict_desde_dict():
 
     # Crear tarea original
     task_original = Task(
