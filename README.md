@@ -25,45 +25,56 @@ TaskFlow CLI es un gestor de tareas moderno ejecutado directamente desde la term
 
         pytest: Para la ejecución de tests.
 
+        customtkinter: Para la interfaz grafica.
+
         pydantic / dataclasses: Para el modelado y validación de datos.
 
 ## 🚀 Instalación y Configuración
 
 Clona el repositorio:
 ````Bash
-git clone https://github.com/zombiradiactivo/TaskFlow-CLI/settings.git
+git clone https://github.com/zombiradiactivo/TaskFlow-CLI.git
 cd TaskFlow-CLI
 ````
-Crea y activa un entorno virtual:
+Crea y activa un entorno virtual(Opcional):
 ````Bash
 python -m venv venv
 source venv/bin/activate  # En Windows: venv\Scripts\activate
 ````
 Instala las dependencias:
 ````Bash
-pip install typer rich pytest
+pip install -r requirements.txt
 ````
 
-## 💻 Uso de la Aplicación
+## 💻 Uso de la Aplicación via CLI 
 
 A continuación, algunos comandos básicos para interactuar con TaskFlow:
 
-Añadir una tarea:
+
+Añadir una tarea(1 Prioridad baja - 5 Prioridad Alta):
 ````Bash
-python main.py add "Finalizar informe mensual" --priority high
+python -m taskflow.cli add "Nombre de la tarea" [1-5] 
 ````
 Listar tareas:
 ````Bash
-python main.py list
+python -m taskflow.cli list
 ````
 Completar una tarea:
 ````Bash
-python main.py complete 1
+python -m taskflow.cli done [id]
 ````
 Eliminar una tarea:
 ````Bash
-python main.py delete 1
+python -m taskflow.cli delete [id]
 ````
+
+## 💻 Uso de la Aplicación via GUI
+
+Iniciar la interfaz grafica:
+````Bash
+python -m taskflow.gui
+````
+
 ## 🧠 Metodología: Colaboración Humano-IA
 
 Este proyecto es un caso de estudio sobre el desarrollo de software moderno. Se han aplicado los siguientes pilares:
