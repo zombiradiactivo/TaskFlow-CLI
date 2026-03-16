@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from dataclasses import asdict
 from datetime import datetime
-from .models import Task
+from models import Task
 
 def save_tasks(tasks: list[Task], path: str | Path) -> None:
     """
