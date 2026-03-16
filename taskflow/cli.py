@@ -96,5 +96,23 @@ def delete(task_id: int):
     else:
         console.print(f"[bold red]Error:[/bold red] La tarea {task_id} no existe.")
 
+@app.command()
+def rename(task_id: int, new_title: str):
+    """Modifica el nombre de una tarea existente."""
+    tasks = load_tasks(DB_PATH)
+    encontrada = False
+    
+    for t in tasks:
+        if t.id == task_id:
+            t.titulo = new_title
+            encontrada = True
+            break
+    
+    if encontrada:
+        save_tasks(tasks, DB_PATH)
+        console.print(f"[bold green]Renombrada![/bold green] Tarea {task_id} ahora se llama '[italic]{new_title}[/italic]'.")
+    else:
+        console.print(f"[bold red]Error:[/bold red] No se encontró la tarea {task_id}")
+
 if __name__ == "__main__":
     app()
