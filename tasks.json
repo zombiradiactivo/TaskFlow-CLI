@@ -1,0 +1,9 @@
+[
+  {
+    "id": 1,
+    "titulo": "Estudiar pytest",
+    "prioridad": 4,
+    "estado": "Pendiente",
+    "fecha": "2026-03-16T12:13:13.688615"
+  }
+]
