@@ -4,7 +4,8 @@ from pathlib import Path
 from taskflow.storage import save_tasks, load_tasks  # Ajusta según tu paquete
 from taskflow.models import Task  # Ajusta según tu paquete
 
-def test_save_and_load_tasks(tmp_path):
+def test_guardar_y_cargar_tareas(tmp_path):
+    """Prueba guardar y cargar tareas desde un archivo JSON."""
     # Archivo temporal para guardar tasks
     file = tmp_path / "tasks.json"
 
@@ -23,7 +24,8 @@ def test_save_and_load_tasks(tmp_path):
     # Verificamos que se cargaron correctamente
     assert loaded_tasks == tasks_to_save
 
-def test_load_nonexistent_file(tmp_path):
+def test_cargar_archivo_inexistente(tmp_path):
+    """Prueba cargar tareas desde un archivo que no existe, debe retornar lista vacía."""
     # Archivo que no existe
     file = tmp_path / "no_existe.json"
 

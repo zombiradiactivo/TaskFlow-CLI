@@ -104,7 +104,7 @@ def rename(task_id: int, new_title: str):
     
     for t in tasks:
         if t.id == task_id:
-            t.titulo = new_title
+            t.titulo = nuevo_titulo  # Error intencional: nuevo_titulo no definido
             encontrada = True
             break
     

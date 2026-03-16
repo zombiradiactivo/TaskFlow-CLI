@@ -2,7 +2,8 @@ from datetime import datetime
 from taskflow.models import Task
 
 
-def test_creacion_valida_task():
+def test_creacion_valida_tarea():
+    """Prueba la creación válida de una tarea con todos los atributos correctos."""
     task = Task(
         id=1,
         titulo="Comprar café",
@@ -25,6 +26,7 @@ import pytest
 from taskflow.models import Task
 
 def test_prioridad_invalida():
+    """Prueba que se lanza ValueError para prioridades fuera del rango 1-5."""
     
     # prioridad menor que el mínimo
     with pytest.raises(ValueError):
