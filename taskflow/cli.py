@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Optional
 
 # Importamos nuestras capas previas
+from taskflow.Sorting_Strategy import PriorityDateStrategy, RecentFirstStrategy, SortingStrategy, TitleAlphabeticalStrategy
 from taskflow.models import Task
 from taskflow.storage import cargar_tareas, guardar_tareas
 from taskflow.logic import ordenar_por_prioridad, ordenar_tareas_fecha_prioridad
@@ -42,12 +43,18 @@ def list(type: Optional[str] = None):
         console.print("[yellow]No hay tareas pendientes. ¡Tómate un café! ☕[/yellow]")
         raise typer.Exit()
 
-    if type == "fecha":
-        # Ordenamos antes de mostrar (O(n log n) gracias a Timsort)
-        tasks_ordenadas = ordenar_tareas_fecha_prioridad(tasks, reverse=True)
-    else:
-        tasks_ordenadas = ordenar_por_prioridad(tasks, reverse=True)
+    # 1. Definimos las estrategias disponibles
+    strategies: dict[str, SortingStrategy] = {
+        "fecha": RecentFirstStrategy(),
+        "prioridad": PriorityDateStrategy(),
+        "abc": TitleAlphabeticalStrategy()
+    }
 
+    # 2. Manejamos el caso None explícitamente
+    # Si 'type' es None o no está en el diccionario, usamos PriorityDateStrategy    
+    # Por si el usuario escribe algo que no existe:
+    strategy = strategies.get(type, PriorityDateStrategy()) if type else PriorityDateStrategy()
+    tasks_ordenadas = strategy.sort(tasks)
 
     table = Table(title="📋 TaskFlow - Lista de Tareas")
     table.add_column("ID", justify="right", style="dim")

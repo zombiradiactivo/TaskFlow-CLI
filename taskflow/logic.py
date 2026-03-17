@@ -1,4 +1,5 @@
 from typing import Any
+from taskflow.Sorting_Strategy import PriorityDateStrategy, SortingStrategy
 from taskflow.models import Task
 
 def filtrar_por_estatus(tasks: list[Task], status: str) -> list[Task]:
@@ -14,6 +15,19 @@ def filtrar_por_estatus(tasks: list[Task], status: str) -> list[Task]:
         return []
     
     return [t for t in tasks if t.estado.lower() == status.lower()]
+
+def ordenar_tareas(tasks: list[Task], strategy: SortingStrategy = PriorityDateStrategy()) -> list[Task]:
+    """
+    Ordena las tareas delegando la lógica a una estrategia específica.
+    
+    El patrón Strategy permite cumplir el principio Open/Closed: 
+    Podemos añadir nuevos modos de ordenado creando nuevas clases 
+    sin tocar esta función.
+    """
+    if not tasks:
+        return []
+    
+    return strategy.sort(tasks)
 
 def ordenar_por_prioridad(tasks: list[Task], reverse: bool = False) -> list[Task]:
     """
