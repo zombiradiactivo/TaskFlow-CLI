@@ -4,57 +4,66 @@ from dataclasses import asdict
 from datetime import datetime
 from taskflow.models import Task
 
-def guardar_tareas(tasks: list[Task], path: str | Path) -> None:
+class TaskRepository:
     """
-    Guarda una lista de objetos Task en un archivo JSON.
-    
-    Args:
-        tasks: Lista de instancias de Task.
-        path: Ruta del archivo (string o Path object).
+    Repositorio para gestionar la persistencia de tareas en formato JSON.
+    Implementa el Patrón Repository para centralizar el acceso a datos.
     """
-    # Convertimos los objetos dataclass a diccionarios
-    # La fecha se convierte a string ISO para que sea serializable
-    data = []
-    for task in tasks:
-        task_dict = asdict(task)
-        task_dict['fecha'] = task.fecha.isoformat()
-        data.append(task_dict)
 
-    with open(path, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+    def __init__(self, file_path: str | Path):
+        self.file_path = Path(file_path)
 
-def cargar_tareas(path: str | Path) -> list[Task]:
-    """
-    Carga tareas desde un archivo JSON. Si el archivo no existe,
-    retorna una lista vacía en lugar de lanzar una excepción.
-    
-    Args:
-        path: Ruta del archivo JSON.
+    def guardar_tareas(self, tasks: list[Task], path: str | Path) -> None:
+        """
+        Guarda una lista de objetos Task en un archivo JSON.
         
-    Returns:
-        list[Task]: Lista de objetos Task reconstruidos.
-    """
-    archivo = Path(path)
-    
-    if not archivo.exists():
-        return []
+        Args:
+            tasks: Lista de instancias de Task.
+            path: Ruta del archivo (string o Path object).
+        """
+        # Convertimos los objetos dataclass a diccionarios
+        # La fecha se convierte a string ISO para que sea serializable
+        data = []
+        for task in tasks:
+            task_dict = asdict(task)
+            task_dict['fecha'] = task.fecha.isoformat()
+            data.append(task_dict)
 
-    try:
-        with open(archivo, 'r', encoding='utf-8') as f:
-            data = json.load(f)
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+
+    def cargar_tareas(self, path: str | Path) -> list[Task]:
+        """
+        Carga tareas desde un archivo JSON. Si el archivo no existe,
+        retorna una lista vacía en lugar de lanzar una excepción.
+        
+        Args:
+            path: Ruta del archivo JSON.
             
-        tasks = []
-        for item in data:
-            # Reconvertimos el string de fecha a objeto datetime
-            item['fecha'] = datetime.fromisoformat(item['fecha'])
-            tasks.append(Task(**item))
-        return tasks
+        Returns:
+            list[Task]: Lista de objetos Task reconstruidos.
+        """
+        archivo = Path(path)
         
-    except (json.JSONDecodeError, KeyError, TypeError):
-        # Si el JSON está corrupto o mal formado, retornamos lista vacía
-        return []
+        if not archivo.exists():
+            return []
 
-# Ejemplo de uso:
-# tareas = [Task(1, "Lavar coche", 3, "Pendiente")]
-# save_tasks(tareas, "tareas.json")
-# nuevas_tareas = load_tasks("tareas.json")
+        try:
+            with open(archivo, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                
+            tasks = []
+            for item in data:
+                # Reconvertimos el string de fecha a objeto datetime
+                item['fecha'] = datetime.fromisoformat(item['fecha'])
+                tasks.append(Task(**item))
+            return tasks
+            
+        except (json.JSONDecodeError, KeyError, TypeError):
+            # Si el JSON está corrupto o mal formado, retornamos lista vacía
+            return []
+
+    # Ejemplo de uso:
+    # tareas = [Task(1, "Lavar coche", 3, "Pendiente")]
+    # save_tasks(tareas, "tareas.json")
+    # nuevas_tareas = load_tasks("tareas.json")

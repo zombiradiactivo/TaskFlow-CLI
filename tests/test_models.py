@@ -1,8 +1,9 @@
-from taskflow.storage import guardar_tareas,cargar_tareas
+from taskflow.storage import TaskRepository
 from taskflow.models import Task
 from datetime import datetime
 import pytest
 
+taskrepository = TaskRepository
 
 def test_creacion_valida_tarea():
     """Prueba la creación válida de una tarea con todos los atributos correctos."""
@@ -51,7 +52,7 @@ def test_prioridad_invalida():
 
 
 
-def test_task_a_dict_desde_dict():
+def test_task_a_dict_desde_dict(tmp_path):
 
     # Crear tarea original
     task_original = Task(
@@ -61,13 +62,14 @@ def test_task_a_dict_desde_dict():
         estado="Pendiente"
     )
 
-    # archivo temporal para el test
-   
-        # guardar
-    guardar_tareas([task_original],"tasks.json")
+    # Archivo temporal para guardar tasks
+    file = tmp_path / "tasks.json"
 
-        # cargar
-    tareas_cargadas = cargar_tareas("tasks.json")
+    # guardar
+    taskrepository(file).guardar_tareas([task_original],file)
+
+    # cargar
+    tareas_cargadas = taskrepository(file).cargar_tareas(file)
 
     task_recuperada = tareas_cargadas[0]
 

@@ -3,7 +3,7 @@ import uuid
 
 # Importamos la lógica de tu proyecto original
 from taskflow.models import Task
-from taskflow.storage import cargar_tareas, guardar_tareas
+from taskflow.storage import TaskRepository
 from taskflow.logic import ordenar_por_prioridad, calcular_estadisticas
 
 # Configuración visual global de CustomTkinter
@@ -11,6 +11,7 @@ ctk.set_appearance_mode("dark")  # Modos: "System", "Dark", "Light"
 ctk.set_default_color_theme("blue")  # Temas: "blue", "green", "dark-blue"
 
 DB_PATH = "tasks.json"
+taskrepository = TaskRepository(DB_PATH)
 
 class TaskFlowGUI(ctk.CTk):
     def __init__(self):
@@ -21,7 +22,7 @@ class TaskFlowGUI(ctk.CTk):
         self.minsize(800, 500)
         
         # Estado de la aplicación
-        self.tasks = cargar_tareas(DB_PATH)
+        self.tasks = taskrepository.cargar_tareas(DB_PATH)
 
         # Diccionario de colores para prioridades
         self.priority_colors = {
@@ -102,7 +103,7 @@ class TaskFlowGUI(ctk.CTk):
         nueva_tarea = Task(id=nuevo_id, titulo=titulo, prioridad=prioridad, estado="Pendiente")
         
         self.tasks.append(nueva_tarea)
-        guardar_tareas(self.tasks, DB_PATH)
+        taskrepository.guardar_tareas(self.tasks, DB_PATH)
         
         self.entry_title.delete(0, 'end') # Limpiar input
         self.refresh_ui()
@@ -110,13 +111,13 @@ class TaskFlowGUI(ctk.CTk):
     def toggle_task_status(self, task: Task):
         """Alterna entre Pendiente y Completada."""
         task.estado = "Completada" if task.estado == "Pendiente" else "Pendiente"
-        guardar_tareas(self.tasks, DB_PATH)
+        taskrepository.guardar_tareas(self.tasks, DB_PATH)
         self.refresh_ui()
 
     def delete_task(self, task: Task):
         """Elimina la tarea."""
         self.tasks.remove(task)
-        guardar_tareas(self.tasks, DB_PATH)
+        taskrepository.guardar_tareas(self.tasks, DB_PATH)
         self.refresh_ui()
 
     def refresh_ui(self):

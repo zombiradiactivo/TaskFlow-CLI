@@ -8,12 +8,13 @@ from typing import Optional
 # Importamos nuestras capas previas
 from taskflow.Sorting_Strategy import PriorityDateStrategy, RecentFirstStrategy, SortingStrategy, TitleAlphabeticalStrategy
 from taskflow.models import Task
-from taskflow.storage import cargar_tareas, guardar_tareas
+from taskflow.storage import TaskRepository
 from taskflow.logic import ordenar_por_prioridad, ordenar_tareas_fecha_prioridad
 
 app = typer.Typer(help="TaskFlow CLI - Gestión de tareas ultra rápida.")
 console = Console()
 DB_PATH = "tasks.json"
+taskrepository = TaskRepository(DB_PATH)
 
 def coger_color(prioridad: int) -> str:
     """Retorna un color de Rich según la prioridad."""
@@ -23,21 +24,21 @@ def coger_color(prioridad: int) -> str:
 @app.command()
 def add(titulo: str, prioridad: int = typer.Argument(..., min=1, max=5)):
     """Añade una nueva tarea con un ID único."""
-    tasks = cargar_tareas(DB_PATH)
+    tasks = taskrepository.cargar_tareas(DB_PATH)
     
     # Generamos ID usando la parte inicial de un uuid4 para brevedad
     nuevo_id = int(uuid.uuid4().int % 10000)
     nueva_tarea = Task(id=nuevo_id, titulo=titulo, prioridad=prioridad, estado="Pendiente")
     
     tasks.append(nueva_tarea)
-    guardar_tareas(tasks, DB_PATH)
+    taskrepository.guardar_tareas(tasks, DB_PATH)
     
     console.print(f"[bold green]✔[/bold green] Tarea '[italic]{titulo}[/italic]' añadida con ID [bold]{nuevo_id}[/bold]")
 
 @app.command()
 def list(type: Optional[str] = None):
     """Muestra todas las tareas en una tabla organizada por prioridad."""
-    tasks = cargar_tareas(DB_PATH)
+    tasks = taskrepository.cargar_tareas(DB_PATH)
     
     if not tasks:
         console.print("[yellow]No hay tareas pendientes. ¡Tómate un café! ☕[/yellow]")
@@ -78,7 +79,7 @@ def list(type: Optional[str] = None):
 @app.command()
 def done(task_id: int):
     """Marca una tarea como completada."""
-    tasks = cargar_tareas(DB_PATH)
+    tasks = taskrepository.cargar_tareas(DB_PATH)
     encontrada = False
     
     for t in tasks:
@@ -88,7 +89,7 @@ def done(task_id: int):
             break
     
     if encontrada:
-        guardar_tareas(tasks, DB_PATH)
+        taskrepository.guardar_tareas(tasks, DB_PATH)
         console.print(f"[bold green]Done![/bold green] Tarea {task_id} actualizada.")
     else:
         console.print(f"[bold red]Error:[/bold red] No se encontró la tarea {task_id}")
@@ -96,14 +97,14 @@ def done(task_id: int):
 @app.command()
 def delete(task_id: int):
     """Elimina una tarea permanentemente."""
-    tasks = cargar_tareas(DB_PATH)
+    tasks = taskrepository.cargar_tareas(DB_PATH)
     original_count = len(tasks)
     
     # Filtramos la lista eliminando el ID coincidente
     tasks = [t for t in tasks if t.id != task_id]
     
     if len(tasks) < original_count:
-        guardar_tareas(tasks, DB_PATH)
+        taskrepository.guardar_tareas(tasks, DB_PATH)
         console.print(f"[bold red]🗑 Eliminada:[/bold red] La tarea {task_id} ha sido borrada.")
     else:
         console.print(f"[bold red]Error:[/bold red] La tarea {task_id} no existe.")
@@ -111,7 +112,7 @@ def delete(task_id: int):
 @app.command()
 def renombrar(task_id: int, new_title: str):
     """Modifica el nombre de una tarea existente."""
-    tasks = cargar_tareas(DB_PATH)
+    tasks = taskrepository.cargar_tareas(DB_PATH)
     encontrada = False
     
     for t in tasks:
@@ -121,7 +122,7 @@ def renombrar(task_id: int, new_title: str):
             break
     
     if encontrada:
-        guardar_tareas(tasks, DB_PATH)
+        taskrepository.guardar_tareas(tasks, DB_PATH)
         console.print(f"[bold green]Renombrada![/bold green] Tarea {task_id} ahora se llama '[italic]{new_title}[/italic]'.")
     else:
         console.print(f"[bold red]Error:[/bold red] No se encontró la tarea {task_id}")
