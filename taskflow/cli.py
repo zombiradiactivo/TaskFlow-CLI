@@ -1,15 +1,18 @@
+from rich.progress import Progress, BarColumn, TextColumn
+from rich.console import Console
+from rich.columns import Columns
+from rich.table import Table
+from rich.panel import Panel
+from typing import Optional
 import typer
 import uuid
-from rich.console import Console
-from rich.table import Table
-from datetime import datetime
-from typing import Optional
+
 
 # Importamos nuestras capas previas
 from taskflow.Sorting_Strategy import PriorityDateStrategy, RecentFirstStrategy, SortingStrategy, TitleAlphabeticalStrategy
-from taskflow.models import Task
+from taskflow.logic import calcular_estadisticas
 from taskflow.storage import TaskRepository
-from taskflow.logic import ordenar_por_prioridad, ordenar_tareas_fecha_prioridad
+from taskflow.models import Task
 
 app = typer.Typer(help="TaskFlow CLI - Gestión de tareas ultra rápida.")
 console = Console()
@@ -108,6 +111,55 @@ def delete(task_id: int):
         console.print(f"[bold red]🗑 Eliminada:[/bold red] La tarea {task_id} ha sido borrada.")
     else:
         console.print(f"[bold red]Error:[/bold red] La tarea {task_id} no existe.")
+
+# Reto Comando stats visual
+@app.command()
+def stats():
+    """Muestra estadísticas visuales de las tareas y progreso de completado."""
+    repo = TaskRepository(DB_PATH)
+    tasks = repo.cargar_tareas(DB_PATH)
+    
+    stats = calcular_estadisticas(tasks)
+    
+    if stats["total"] == 0:
+        console.print("[yellow]No hay datos suficientes para generar estadísticas. 📊[/yellow]")
+        return
+
+    # 1. Creación de la barra de progreso visual
+    progress_bar = Progress(
+        TextColumn("[bold blue]{task.description}"),
+        BarColumn(bar_width=None),
+        TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+    )
+    
+    # Añadimos la tarea a la barra (completadas vs total)
+    task_id = progress_bar.add_task("Progreso General", total=stats["total"])
+    progress_bar.update(task_id, completed=stats["completadas"])
+
+    # 2. Organización de métricas en paneles (Cards)
+    # Calculamos cuántas tareas hay por cada nivel de prioridad para el detalle
+    prioridades = {i: sum(1 for t in tasks if t.prioridad == i) for i in range(1, 6)}
+    
+    detalle_prioridad = "\n".join([f"Prioridad {p}: {count}" for p, count in prioridades.items() if count > 0])
+
+    panel_main = Panel(
+        f"[bold]Total:[/bold] {stats['total']}\n"
+        f"[green]Completadas:[/green] {stats['completadas']}\n"
+        f"[yellow]Pendientes:[/yellow] {stats['pendientes']}",
+        title="📊 Resumen",
+        expand=True
+    )
+
+    panel_extra = Panel(
+        f"[bold]Prioridad Media:[/bold] {stats['prioridad_media']} ⭐\n\n"
+        f"[dim]{detalle_prioridad}[/dim]",
+        title="📈 Detalles",
+        expand=True
+    )
+
+    # 3. Renderizado final
+    console.print(Panel(progress_bar, title="🚀 Rendimiento", border_style="blue"))
+    console.print(Columns([panel_main, panel_extra]))
 
 @app.command()
 def renombrar(task_id: int, new_title: str):

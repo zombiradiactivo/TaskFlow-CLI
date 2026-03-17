@@ -71,6 +71,12 @@ Completar una tarea:
 ````Bash
 python -m taskflow.cli done [id]
 ````
+
+Mostrar estadisticas:
+````Bash
+python -m taskflow.cli stats
+````
+
 Eliminar una tarea:
 ````Bash
 python -m taskflow.cli delete [id]

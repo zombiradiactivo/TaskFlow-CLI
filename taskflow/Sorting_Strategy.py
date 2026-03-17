@@ -3,6 +3,8 @@ from typing import List
 
 from taskflow.models import Task
 
+# Reto Patrón Strategy
+
 # Interfaz de la Estrategia
 class SortingStrategy(ABC):
     @abstractmethod

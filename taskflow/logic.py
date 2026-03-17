@@ -16,6 +16,8 @@ def filtrar_por_estatus(tasks: list[Task], status: str) -> list[Task]:
     
     return [t for t in tasks if t.estado.lower() == status.lower()]
 
+# No utilizado
+# Reto Patrón Strategy
 def ordenar_tareas(tasks: list[Task], strategy: SortingStrategy = PriorityDateStrategy()) -> list[Task]:
     """
     Ordena las tareas delegando la lógica a una estrategia específica.
@@ -29,6 +31,7 @@ def ordenar_tareas(tasks: list[Task], strategy: SortingStrategy = PriorityDateSt
     
     return strategy.sort(tasks)
 
+# Utilizado por gui y test_logic
 def ordenar_por_prioridad(tasks: list[Task], reverse: bool = False) -> list[Task]:
     """
     Ordena las tareas por nivel de prioridad.
@@ -48,6 +51,8 @@ def ordenar_por_prioridad(tasks: list[Task], reverse: bool = False) -> list[Task
     # Usamos el parámetro 'key' para acceder al atributo de la dataclass
     return sorted(tasks, key=lambda t: t.prioridad, reverse=reverse)
 
+# No utilizado
+# Reto Algoritmo avanzado
 def ordenar_tareas_fecha_prioridad(tasks: list[Task], reverse: bool = True) -> list[Task]:
     """
     Ordena las tareas por múltiples criterios:
