@@ -3,11 +3,12 @@ import uuid
 from rich.console import Console
 from rich.table import Table
 from datetime import datetime
+from typing import Optional
 
 # Importamos nuestras capas previas
 from taskflow.models import Task
 from taskflow.storage import cargar_tareas, guardar_tareas
-from taskflow.logic import ordenar_por_prioridad
+from taskflow.logic import ordenar_por_prioridad, ordenar_tareas_fecha_prioridad
 
 app = typer.Typer(help="TaskFlow CLI - Gestión de tareas ultra rápida.")
 console = Console()
@@ -33,7 +34,7 @@ def add(titulo: str, prioridad: int = typer.Argument(..., min=1, max=5)):
     console.print(f"[bold green]✔[/bold green] Tarea '[italic]{titulo}[/italic]' añadida con ID [bold]{nuevo_id}[/bold]")
 
 @app.command()
-def list():
+def list(type: Optional[str] = None):
     """Muestra todas las tareas en una tabla organizada por prioridad."""
     tasks = cargar_tareas(DB_PATH)
     
@@ -41,9 +42,13 @@ def list():
         console.print("[yellow]No hay tareas pendientes. ¡Tómate un café! ☕[/yellow]")
         raise typer.Exit()
 
-    # Ordenamos antes de mostrar (O(n log n) gracias a Timsort)
-    tasks_ordenadas = ordenar_por_prioridad(tasks, reverse=True)
-    
+    if type == "fecha":
+        # Ordenamos antes de mostrar (O(n log n) gracias a Timsort)
+        tasks_ordenadas = ordenar_tareas_fecha_prioridad(tasks, reverse=True)
+    else:
+        tasks_ordenadas = ordenar_por_prioridad(tasks, reverse=True)
+
+
     table = Table(title="📋 TaskFlow - Lista de Tareas")
     table.add_column("ID", justify="right", style="dim")
     table.add_column("Título", style="white")
@@ -104,7 +109,7 @@ def renombrar(task_id: int, new_title: str):
     
     for t in tasks:
         if t.id == task_id:
-            t.titulo = nuevo_titulo  # Error intencional: nuevo_titulo no definido
+            t.titulo = new_title 
             encontrada = True
             break
     

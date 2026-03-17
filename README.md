@@ -56,9 +56,15 @@ Añadir una tarea(1 Prioridad baja - 5 Prioridad Alta):
 python -m taskflow.cli add "Nombre de la tarea" [1-5] 
 ````
 Listar tareas:
-````Bash
-python -m taskflow.cli list
-````
+
+Ordena las tareas por múltiples criterios:
+- 1. Prioridad (de mayor a menor por defecto).
+- 2. Fecha (más reciente o más antigua según prioridad).
+#### [--type "fecha" es opcional]
+```Bash
+python -m taskflow.cli list --type fecha
+```
+
 Completar una tarea:
 ````Bash
 python -m taskflow.cli done [id]

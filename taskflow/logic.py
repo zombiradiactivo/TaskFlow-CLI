@@ -20,8 +20,9 @@ def ordenar_por_prioridad(tasks: list[Task], reverse: bool = False) -> list[Task
     Ordena las tareas por nivel de prioridad.
     
     NOTA SOBRE EL ALGORITMO:
-    Python usa internamente Timsort, un algoritmo híbrido derivado de 
-    Merge Sort e Insertion Sort. 
+    Python utiliza Timsort. Al realizar una sola pasada sobre la lista para
+    generar las llaves de ordenamiento y luego aplicar el sort, mantenemos
+    la eficiencia logarítmica lineal, ideal para conjuntos de datos grandes.
     - Complejidad Temporal: O(n log n) en el peor de los casos.
     - Complejidad Espacial: O(n).
     Es un algoritmo "estable", lo que significa que mantiene el orden 
@@ -32,6 +33,20 @@ def ordenar_por_prioridad(tasks: list[Task], reverse: bool = False) -> list[Task
     
     # Usamos el parámetro 'key' para acceder al atributo de la dataclass
     return sorted(tasks, key=lambda t: t.prioridad, reverse=reverse)
+
+def ordenar_tareas_fecha_prioridad(tasks: list[Task], reverse: bool = True) -> list[Task]:
+    """
+    Ordena las tareas por múltiples criterios:
+    1. Prioridad (de mayor a menor por defecto).
+    2. Fecha (más reciente o más antigua según prioridad).
+    """
+    if not tasks:
+        return []
+
+    # Ordenamos usando una tupla como clave: (prioridad, fecha)
+    # Si reverse=True: Prioridad 5 va primero. Si las prioridades son iguales,
+    # la fecha más reciente (mayor) va primero.
+    return sorted(tasks, key=lambda t: (t.prioridad, t.fecha), reverse=reverse)
 
 def calcular_estadisticas(tasks: list[Task]) -> dict[str, Any]:
     """
