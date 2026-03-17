@@ -1,7 +1,7 @@
 from typing import Any
 from taskflow.models import Task
 
-def filter_by_status(tasks: list[Task], status: str) -> list[Task]:
+def filtrar_por_estatus(tasks: list[Task], status: str) -> list[Task]:
     """
     Filtra las tareas según su estado.
     
@@ -15,7 +15,7 @@ def filter_by_status(tasks: list[Task], status: str) -> list[Task]:
     
     return [t for t in tasks if t.estado.lower() == status.lower()]
 
-def sort_by_priority(tasks: list[Task], reverse: bool = False) -> list[Task]:
+def ordenar_por_prioridad(tasks: list[Task], reverse: bool = False) -> list[Task]:
     """
     Ordena las tareas por nivel de prioridad.
     
@@ -33,7 +33,7 @@ def sort_by_priority(tasks: list[Task], reverse: bool = False) -> list[Task]:
     # Usamos el parámetro 'key' para acceder al atributo de la dataclass
     return sorted(tasks, key=lambda t: t.prioridad, reverse=reverse)
 
-def get_stats(tasks: list[Task]) -> dict[str, Any]:
+def calcular_estadisticas(tasks: list[Task]) -> dict[str, Any]:
     """
     Calcula estadísticas generales de la lista de tareas.
     

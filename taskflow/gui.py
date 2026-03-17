@@ -3,8 +3,8 @@ import uuid
 
 # Importamos la lógica de tu proyecto original
 from taskflow.models import Task
-from taskflow.storage import load_tasks, save_tasks
-from taskflow.logic import sort_by_priority, get_stats
+from taskflow.storage import cargar_tareas, guardar_tareas
+from taskflow.logic import ordenar_por_prioridad, calcular_estadisticas
 
 # Configuración visual global de CustomTkinter
 ctk.set_appearance_mode("dark")  # Modos: "System", "Dark", "Light"
@@ -21,7 +21,7 @@ class TaskFlowGUI(ctk.CTk):
         self.minsize(800, 500)
         
         # Estado de la aplicación
-        self.tasks = load_tasks(DB_PATH)
+        self.tasks = cargar_tareas(DB_PATH)
 
         # Diccionario de colores para prioridades
         self.priority_colors = {
@@ -102,7 +102,7 @@ class TaskFlowGUI(ctk.CTk):
         nueva_tarea = Task(id=nuevo_id, titulo=titulo, prioridad=prioridad, estado="Pendiente")
         
         self.tasks.append(nueva_tarea)
-        save_tasks(self.tasks, DB_PATH)
+        guardar_tareas(self.tasks, DB_PATH)
         
         self.entry_title.delete(0, 'end') # Limpiar input
         self.refresh_ui()
@@ -110,19 +110,19 @@ class TaskFlowGUI(ctk.CTk):
     def toggle_task_status(self, task: Task):
         """Alterna entre Pendiente y Completada."""
         task.estado = "Completada" if task.estado == "Pendiente" else "Pendiente"
-        save_tasks(self.tasks, DB_PATH)
+        guardar_tareas(self.tasks, DB_PATH)
         self.refresh_ui()
 
     def delete_task(self, task: Task):
         """Elimina la tarea."""
         self.tasks.remove(task)
-        save_tasks(self.tasks, DB_PATH)
+        guardar_tareas(self.tasks, DB_PATH)
         self.refresh_ui()
 
     def refresh_ui(self):
         """Limpia y vuelve a dibujar la lista de tareas y estadísticas."""
         # 1. Actualizar Estadísticas
-        stats = get_stats(self.tasks)
+        stats = calcular_estadisticas(self.tasks)
         stats_text = (
             f"Total: {stats['total']}\n"
             f"Pendientes: {stats['pendientes']}\n"
@@ -140,8 +140,8 @@ class TaskFlowGUI(ctk.CTk):
         pendientes = [t for t in self.tasks if t.estado == "Pendiente"]
         completadas = [t for t in self.tasks if t.estado == "Completada"]
         
-        pendientes = sort_by_priority(pendientes, reverse=True)
-        completadas = sort_by_priority(completadas, reverse=True)
+        pendientes = ordenar_por_prioridad(pendientes, reverse=True)
+        completadas = ordenar_por_prioridad(completadas, reverse=True)
         
         todas_las_tareas = pendientes + completadas
 

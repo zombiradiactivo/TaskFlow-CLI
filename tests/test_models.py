@@ -1,5 +1,7 @@
-from datetime import datetime
+from taskflow.storage import guardar_tareas,cargar_tareas
 from taskflow.models import Task
+from datetime import datetime
+import pytest
 
 
 def test_creacion_valida_tarea():
@@ -21,9 +23,6 @@ def test_creacion_valida_tarea():
 
 
 
-
-import pytest
-from taskflow.models import Task
 
 def test_prioridad_invalida():
     """Prueba que se lanza ValueError para prioridades fuera del rango 1-5."""
@@ -50,8 +49,6 @@ def test_prioridad_invalida():
 
 
 
-from taskflow.models import Task
-from taskflow.storage import save_tasks,load_tasks
 
 
 def test_task_a_dict_desde_dict():
@@ -67,10 +64,10 @@ def test_task_a_dict_desde_dict():
     # archivo temporal para el test
    
         # guardar
-    save_tasks([task_original],"tasks.json")
+    guardar_tareas([task_original],"tasks.json")
 
         # cargar
-    tareas_cargadas = load_tasks("tasks.json")
+    tareas_cargadas = cargar_tareas("tasks.json")
 
     task_recuperada = tareas_cargadas[0]
 

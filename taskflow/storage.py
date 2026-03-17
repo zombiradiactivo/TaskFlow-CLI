@@ -4,7 +4,7 @@ from dataclasses import asdict
 from datetime import datetime
 from taskflow.models import Task
 
-def save_tasks(tasks: list[Task], path: str | Path) -> None:
+def guardar_tareas(tasks: list[Task], path: str | Path) -> None:
     """
     Guarda una lista de objetos Task en un archivo JSON.
     
@@ -23,7 +23,7 @@ def save_tasks(tasks: list[Task], path: str | Path) -> None:
     with open(path, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
-def load_tasks(path: str | Path) -> list[Task]:
+def cargar_tareas(path: str | Path) -> list[Task]:
     """
     Carga tareas desde un archivo JSON. Si el archivo no existe,
     retorna una lista vacía en lugar de lanzar una excepción.

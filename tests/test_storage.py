@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime
 from pathlib import Path
-from taskflow.storage import save_tasks, load_tasks  # Ajusta según tu paquete
+from taskflow.storage import guardar_tareas, cargar_tareas  # Ajusta según tu paquete
 from taskflow.models import Task  # Ajusta según tu paquete
 
 def test_guardar_y_cargar_tareas(tmp_path):
@@ -16,10 +16,10 @@ def test_guardar_y_cargar_tareas(tmp_path):
     ]
 
     # Guardamos tasks
-    save_tasks(tasks_to_save, file)
+    guardar_tareas(tasks_to_save, file)
 
     # Cargamos tasks
-    loaded_tasks = load_tasks(file)
+    loaded_tasks = cargar_tareas(file)
 
     # Verificamos que se cargaron correctamente
     assert loaded_tasks == tasks_to_save
@@ -30,7 +30,7 @@ def test_cargar_archivo_inexistente(tmp_path):
     file = tmp_path / "no_existe.json"
 
     # Cargar tasks desde archivo inexistente
-    loaded_tasks = load_tasks(file)
+    loaded_tasks = cargar_tareas(file)
 
     # Debe retornar lista vacía
     assert loaded_tasks == []
