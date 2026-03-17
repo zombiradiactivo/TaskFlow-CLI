@@ -19,6 +19,12 @@ def test_filtrar_tarea_unica_no_coincidente():
     t = Task(id=1, titulo="Tarea", prioridad=1, estado="Hecho", fecha=datetime.now())
     assert filtrar_por_estatus([t], "Pendiente") == []
 
+## Test que da fallo intencionalmente 
+def test_filtrar_tarea_unica_no_coincidente_error():
+    """Prueba filtrar una sola tarea que no coincide con el estado."""
+    t = Task(id=1, titulo="Tarea", prioridad=1, estado="Hecho", fecha=datetime.now())
+    assert filtrar_por_estatus([t], "Rick Roll") == [t]
+
 def test_filtrar_insensible_mayusculas():
     """Prueba que el filtro es insensible a mayúsculas y minúsculas."""
     t1 = Task(id=1, titulo="A", prioridad=1, estado="pendiente", fecha=datetime.now())
